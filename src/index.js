@@ -1,87 +1,54 @@
 import './css/styles.css';
 import debounce from 'lodash.debounce';
+import Notiflix from 'notiflix';
 import apiCountries from './js/fetchCountries';
 
 const input = document.querySelector('#search-box');
 const list = document.querySelector('.country-list');
+const countryInfo = document.querySelector('.country-info');
 const DEBOUNCE_DELAY = 300;
 
 input.addEventListener('input', debounce(onSearch, DEBOUNCE_DELAY));
 
 function onSearch(e) {
-  const inputE = e.target.value;
-
-  apiCountries(inputE)
-    .then(data => listTemplate(data))
-    .then(data => appendCountriesMarkup(data));
-
-  // .then(appendCountriesMarkup);
-  //
+  const inputValue = e.target.value.trim();
+  if (inputValue == '') {
+    list.innerHTML = '';
+    return;
+  }
+  apiCountries(inputValue)
+    .then(appendCountriesMarkup)
+    .catch(() => Notiflix.Notify.failure('Qui timide rogat docet negare'));
 }
 
-function appendCountriesMarkup(data) {
-  list.innerHTML = data;
-}
-
-function listTemplate(data) {
-  return data
-    .map(
-      obj => `<li>
-        <img width="30" height="20" src=${obj.flag}></img>
+function appendCountriesMarkup(country) {
+  if (country.length > 10) {
+    Notiflix.Notify.warning(
+      'Too many matches found. Please enter a more specific name.'
+    );
+  } else if (country.length == 1) {
+    list.innerHTML = '';
+    const language = country[0].languages.map(lang => lang.name).join(', ');
+    // language.forEach(n => console.log(n.name));
+    const templateCountry = `<div class="name-wrap"><img width="50" src=${country[0].flag}></img>
+        <p>${country[0].name}</p></div>
+        <div class="country-data">
+      <p class="country-data"> <span>Capital:</span> ${country[0].capital}</p>
+      <p class="country-data"> <span>Population:</span> ${country[0].population}</p>
+      <p class="country-data"> <span>Languages:</span> ${language}
+      </p>
+    </div>`;
+    countryInfo.innerHTML = templateCountry;
+  } else {
+    countryInfo.innerHTML = '';
+    const itemTemplate = country
+      .map(
+        obj => `<li>
+        <img width="30" src=${obj.flag}></img>
       <p>${obj.name}</p>
      </li>`
-    )
-    .join('');
+      )
+      .join('');
+    list.innerHTML = itemTemplate;
+  }
 }
-// function onSearch(e) {
-//   const result = fetchCountries(e.target.value);
-//   result.then(response =>
-//     // console.log(response));
-//     response
-//       .map(
-//         el =>
-//           (list.innerHTML = `<li>
-//        <img width="30" height="20" src=${el.flag}></img>
-//         <p>${el.name}</p>
-//       </li>`)
-//       )
-//       .join('')
-//   );
-// }
-
-// function fetchCountries(name) {
-//   return fetch(
-//     `https://restcountries.com/v2/name/${name}?fields=name,capital,population,flag,languages`
-//   ).then(response => response.json());
-// }
-
-// function renderTamplate(array) {
-//   return array.forEach(
-//     obj => `<li>
-//        <img width="30" height="20" src=${obj.flag}></img>
-//         <p>${obj.name}</p>
-//       </li>`
-//   );
-// }
-
-// array.then(response => response.map(el => console.log(el.name))); // response.map(el =>
-//   console.log(
-//     `<li>
-//   <img width="30" height="20" src=${el.flag}></img>
-//      <p>${el.name}</p>
-//      </li>`
-//   )
-// )
-// }
-//
-// // fetchCountries('peru');
-// const students = [
-//   { name: 'Манго', score: 83 },
-//   { name: 'Поли', score: 59 },
-//   { name: 'Аякс', score: 37 },
-//   { name: 'Киви', score: 94 },
-//   { name: 'Хьюстон', score: 64 },
-// ];
-
-// const names = students.map(student => student.name);
-// console.log(names);

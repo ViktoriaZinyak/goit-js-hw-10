@@ -30,6 +30,30 @@ body {
   align-items: center;
 }
 
-.country-list p {
+p {
   margin: 0 0 0 10px;
+}
+
+.name-wrap {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.name-wrap p {
+  font-weight: 700;
+  font-size: 30px;
+}
+
+.country-data p {
+  margin: 0;
+  font-size: 18px;
+}
+
+.country-data p span {
+  font-weight: 500;
+}
+
+.country-data p:not(:last-child) {
+  margin-bottom: 15px;
 }
