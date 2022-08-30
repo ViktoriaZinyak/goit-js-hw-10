@@ -29,7 +29,6 @@ function appendCountriesMarkup(country) {
   } else if (country.length == 1) {
     list.innerHTML = '';
     const language = country[0].languages.map(lang => lang.name).join(', ');
-    // language.forEach(n => console.log(n.name));
     const templateCountry = `<div class="name-wrap"><img width="50" src=${country[0].flag}></img>
         <p>${country[0].name}</p></div>
         <div class="country-data">
