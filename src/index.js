@@ -18,7 +18,9 @@ function onSearch(e) {
   }
   apiCountries(inputValue)
     .then(appendCountriesMarkup)
-    .catch(() => Notiflix.Notify.failure('Qui timide rogat docet negare'));
+    .catch(() =>
+      Notiflix.Notify.failure('Oops, there is no country with that name')
+    );
 }
 
 function appendCountriesMarkup(country) {
